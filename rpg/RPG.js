@@ -191,6 +191,7 @@ module.exports = class RPG {
       }
       ignoredColumns = line.substr(1, 4);
 
+	  if(line.substr(6).trim().length == 0 && ! (index+1 == length)) continue; //blanks lines won't finish the block structure
       spec = line[6].toUpperCase();
       switch (line[7]) {
         case '/':
@@ -227,7 +228,11 @@ module.exports = class RPG {
           
         } else if (result.isSub === undefined & wasSub) {
           endBlock(this.lines,this.indent);
+        }else if (result.isSub === undefined && result.blockType && lastBlock) {
+          endBlock(this.lines,this.indent);
+          lastBlock = result.blockType;
         }
+        if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
 
         if (result.var !== undefined)
           this.addVar(result.var);
@@ -309,6 +314,7 @@ module.exports = class RPG {
         length++;
       }
       wasSub = false;
+	  lastBlock = '';
     }
   }
 }
