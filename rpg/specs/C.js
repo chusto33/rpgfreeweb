@@ -4,7 +4,7 @@ var Lists = {};
 var EndList = [];
 
 module.exports = {
-    Parse: function (input, indent) {
+    Parse: function (input, indent, wasSub) {
         var output = {
             remove: false,
             change: false,
@@ -53,10 +53,13 @@ module.exports = {
             case "KFLD":
                 //Handle var declaration
                 Lists[LastKey].push(result);
-                output.remove = true;
+	            output.remove = true;
                 break;
             case "ADD":
-                output.value = result + " = " + result + " + " + factor2;
+                if (factor1)
+                    output.value = result + " = " + factor1 + " + " + factor2;
+                else
+                    output.value = result + " = " + result + " + " + factor2;
                 break;
             case "BEGSR":
                 output.value = opcode + " " + factor1;
@@ -207,6 +210,9 @@ module.exports = {
                 break;
             case "ANDEQ":
                 output.aboveKeywords = "AND " + factor1 + " = " + factor2;
+                break;
+            case "ANDNE":
+                output.aboveKeywords = "AND " + factor1 + " <> " + factor2;
                 break;
             case "IF":
                 output.value = opcode + " " + extended;
