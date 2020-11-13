@@ -180,7 +180,7 @@ module.exports = class RPG {
       lastBlock = "";
     for (var index = 0; index < length; index++) {
       if (this.lines[index] === undefined) continue;
-      
+      let isAComentLine = false;
       this.currentLine = index;
 
       comment = "";
@@ -209,7 +209,7 @@ module.exports = class RPG {
           break;
         case '*':
           spec = '';
-
+          isAComentLine = true;
           comment = line.substr(8).trim();
           if (comment !== "")
             this.lines[index] = "".padEnd(8) + "".padEnd(spaces) + "//" + comment;
@@ -295,7 +295,7 @@ module.exports = class RPG {
         }
 
       } else {
-        if (wasSub) {
+        if (wasSub && !isAComentLine) {
           endBlock(this.lines,this.indent);
         }
       }
