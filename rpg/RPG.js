@@ -200,8 +200,13 @@ module.exports = class RPG {
           switch (line.substr(8).trim().toUpperCase()) {
             case 'FREE':
             case 'END-FREE':
+            case 'END-EXEC':
+              this.lines[index-1] = addSemiColon(this.lines[index-1]);
               this.lines.splice(index, 1);
               index--;
+              break;
+            case 'EXEC SQL':
+              spec = 'C';
               break;
             default:
               this.lines[index] = "".padEnd(8) + "".padEnd(spaces) + line.substr(7).trim();
@@ -305,6 +310,10 @@ module.exports = class RPG {
         }
       }
     }
+
+	function addSemiColon(line) {
+		return line.trimEnd() + ";";
+	}
 
 	function endBlock(lines,indent) {
 		spaces -= indent;

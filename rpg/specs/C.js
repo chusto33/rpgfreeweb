@@ -36,6 +36,17 @@ module.exports = {
 
         var arrayoutput = [];
 
+        let sqlEmbedded = false;
+        if(plainOp.trim() == '') {
+         const sqlCharacter = input.charAt(7);
+         sqlEmbedded = ['/', '+'].includes(sqlCharacter);
+          if(sqlEmbedded) {
+           output.value = input.substring(8);;
+           output.change = true;
+           return output;
+          }
+        }
+		
         plainOp = opcode;
         if (plainOp.indexOf('(') >= 0) {
             plainOp = opcode.substr(0, opcode.indexOf('('));
