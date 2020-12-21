@@ -306,15 +306,27 @@ module.exports = class RPG {
       }
     }
 
-    function endBlock(lines,indent) {
-      spaces -= indent;
-      if (lastBlock !== undefined) {
-        lines.splice(index, 0, "".padEnd(8) + "".padEnd(spaces) + "End-" + lastBlock + ";");
-        index++;
-        length++;
-      }
-      wasSub = false;
-	  lastBlock = '';
-    }
+	function endBlock(lines,indent) {
+		spaces -= indent;
+		if (lastBlock !== undefined) {
+			let lastComment = getLastComment(lines, index);
+			let reduce = index - lastComment - 1;
+			lines.splice(index - reduce, 0, "".padEnd(8) + "".padEnd(spaces) + "End-" + lastBlock + ";");
+			index++;
+			length++;
+		}
+		wasSub = false;
+		lastBlock = "";
+	}
+	function getLastComment(lines, index) {
+		index--;
+		while( isACommentOrBlank(lines[index]) ) {
+		index--;
+		}
+		return index;
+	}
+	function isACommentOrBlank(line) {
+		return line.substring(6).includes('//') || line.substring(6).trim() == ""
+	}	
   }
 }
