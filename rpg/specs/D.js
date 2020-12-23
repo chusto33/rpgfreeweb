@@ -161,6 +161,7 @@ module.exports = {
           break;
         case "S":
           output.value = "Dcl-S " + name.padEnd(12) + " " + type.padEnd(10) + " " + keywords;
+		  output.constantContinue = true;
           break;
         case "DS":
         case "PR":
