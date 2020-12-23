@@ -174,7 +174,7 @@ module.exports = class RPG {
 
   parse() {
     var length = this.lines.length;
-    var line, comment, isMove, hasKeywords, ignoredColumns, spec, spaces = 0;
+    var line, comment, isMove, hasKeywords, hasConstantContinue, ignoredColumns, spec, spaces = 0;
     var result;
     var wasSub = false,
       lastBlock = "";
@@ -228,25 +228,26 @@ module.exports = class RPG {
       }
 
       if (specs[spec] !== undefined) {
-        result = specs[spec].Parse(line, this.indent, wasSub);
+        result = specs[spec].Parse(line, this.indent, wasSub, hasConstantContinue);
 
-        if (result.isSub === true) {
+        if (result.isSub === true && !hasConstantContinue) {
           wasSub = true;
           lastBlock = result.blockType;
           
         } else if (result.isSub === undefined & wasSub) {
           endBlock(this.lines,this.indent);
-        }//else if (result.isSub === undefined && result.blockType && lastBlock) {
-         // endBlock(this.lines,this.indent);
-         // lastBlock = result.blockType;
-        //}
-        //if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
+        }else if (result.isSub === undefined && result.blockType && lastBlock) {
+          endBlock(this.lines,this.indent);
+          lastBlock = result.blockType;
+        }
+        if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
 
         if (result.var !== undefined)
           this.addVar(result.var);
 
         isMove = (result.move !== undefined);
         hasKeywords = (result.aboveKeywords !== undefined);
+		hasConstantContinue = result.constantContinue;
 
         if (result.message) {
           this.messages.push(new Message(this.currentLine, result.message));

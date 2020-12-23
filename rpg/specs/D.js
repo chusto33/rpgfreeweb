@@ -5,7 +5,7 @@ var DSisQualified = false;
 var DSisLIKEDS = false;
 
 module.exports = {
-  Parse: function (input, indent, wasSub) {
+  Parse: function (input, indent, wasSub, hasConstantContinue) {
     var output = {
       remove: false,
       change: false,
@@ -38,6 +38,14 @@ module.exports = {
 
     if (keywords.endsWith('+')) {
       keywords = keywords.substr(0, keywords.length-1);
+    } else if(field == '' && hasConstantContinue) {
+      if(keywords.endsWith('-')) {
+        output.constantContinue = true;
+        keywords = keywords.substr(0,keywords.length - 1);
+      }
+      output.value = '';
+      output.aboveKeywords = keywords;
+      return output;
     }
 
     if (type == "") {
@@ -145,6 +153,10 @@ module.exports = {
 
       switch (field) {
         case "C":
+          if(keywords.endsWith('-')) {
+            output.constantContinue = true;
+            keywords = keywords.substr(0, keywords.length - 1);
+          }
           output.value = "Dcl-C " + name.padEnd(10) + " " + keywords;
           break;
         case "S":
