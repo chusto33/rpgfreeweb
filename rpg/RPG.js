@@ -200,14 +200,17 @@ module.exports = class RPG {
           switch (line.substr(8).trim().toUpperCase()) {
             case 'FREE':
             case 'END-FREE':
-            case 'END-EXEC':
-              this.lines[index-1] = addSemiColon(this.lines[index-1]);
               this.lines.splice(index, 1);
               index--;
               break;
             case 'EXEC SQL':
               spec = 'C';
               break;
+            case 'END-EXEC':
+              this.lines.splice(index, 1);
+              this.lines[index-1] = addSemiColon(this.lines[index-1]);
+              index--;
+			  break;
             default:
               this.lines[index] = "".padEnd(8) + "".padEnd(spaces) + line.substr(7).trim();
               break;
@@ -233,11 +236,11 @@ module.exports = class RPG {
           
         } else if (result.isSub === undefined & wasSub) {
           endBlock(this.lines,this.indent);
-        }else if (result.isSub === undefined && result.blockType && lastBlock) {
-          endBlock(this.lines,this.indent);
-          lastBlock = result.blockType;
-        }
-        if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
+        }//else if (result.isSub === undefined && result.blockType && lastBlock) {
+         // endBlock(this.lines,this.indent);
+         // lastBlock = result.blockType;
+        //}
+        //if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
 
         if (result.var !== undefined)
           this.addVar(result.var);
