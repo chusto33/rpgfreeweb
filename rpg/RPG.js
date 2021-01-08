@@ -199,6 +199,7 @@ module.exports = class RPG {
 
           switch (line.substr(8).trim().toUpperCase()) {
             case 'FREE':
+			  if(lastBlock) endBlock(this.lines,this.indent);
             case 'END-FREE':
               this.lines.splice(index, 1);
               index--;
@@ -239,6 +240,8 @@ module.exports = class RPG {
         }else if (result.isSub === undefined && result.blockType && lastBlock) {
           endBlock(this.lines,this.indent);
           lastBlock = result.blockType;
+        }else if (result.var && result.var.standalone) {
+          endBlock(this.lines,this.indent);
         }
         if(lastBlock == '' && result.blockType) lastBlock = result.blockType;
 
